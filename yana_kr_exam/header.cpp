@@ -1,18 +1,42 @@
 #include "header.h"
 #include <unordered_map>
+#include <set>
+
+std::string mas_maker(std::string a, std::string b) {
+	std::set <char> res;
+	for (char ch : a) {
+		if (b.find(ch) == std::string::npos) {
+			res.insert(ch);
+		}
+	}
+	for (char ch : b) {
+		if (a.find(ch) == std::string::npos) {
+			res.insert(ch);
+		}
+	}
+	std::string res_str;
+	for (char ch : res) {
+		res_str += ch;
+	}
+	return res_str;
+}
 
 std::string normal_str(std::string str) {
 	std::string res;
-	for (int i = 0; i < str.length(); ++i) {
-		if (str[i] == ' ') {
-			res += str[i];
-			while (str[i] == ' ') {
-				i++;
+	bool k = false;
+	for (char character : str) {
+		if (character == ' ') {
+			if (!k) {
+				res += ' ';
+				k = true;
 			}
 		}
-	res += str[i];
-	return res;
+		else {
+			res += character;
+			k = false;
+		}
 	}
+	return res;
 }
 
 std::string name_parse(std::string name) {
@@ -68,7 +92,7 @@ std::istream& operator>>(std::istream& input, TPerson& obj) {
 	return input;
 }
 
-std::pair<int, int> TPerson::Date(memb temp) {
+std::pair<int, int> TPerson::Date(memb& temp) {
 	temp.age = 2024 - temp.dmy.year;
 	std::pair<int, int> res;
 	std::string temp_str;
@@ -87,26 +111,41 @@ std::pair<int, int> TPerson::Date(memb temp) {
 	temp_str += std::to_string(temp.dmy.year);
 	res.first = std::stoi(temp_str);
 	while (!temp_str.empty()) {
-		res.second += *temp_str.end() - 48;
+		res.second += *(temp_str.end() - 1) - 48;
 		temp_str.pop_back();
 	}
 	return res;
 }
 
-int TPerson::Curious(std::pair<int, int> temp) {
-	int c, d, e, crs;
-	std::string temp_str;
-	temp_str = std::to_string(temp.second);
-	while (!temp_str.empty()) {
-		c += *temp_str.end() - 48;
-		temp_str.pop_back();
+void TPerson::Curious() {
+	for (int i = 0; i < vec_membs.size(); ++i) {
+		std::pair<int, int> temp = Date(vec_membs[i]);
+		int c = 0, d, e = 0, cur;
+		std::string temp_str, temp_str_2;
+		temp_str = std::to_string(temp.second);
+		temp_str_2 = temp_str;
+		while (!temp_str_2.empty()) {
+			c += *(temp_str_2.end() - 1) - 48;
+			temp_str_2.pop_back();
+		}
+		d = temp.second - (std::to_string(temp.second)[0] - 48) * 2;
+		temp_str = std::to_string(d);
+		while (!temp_str.empty()) {
+			e += *(temp_str.end() - 1) - 48;
+			temp_str.pop_back();
+		}
+		cur = std::stoi(std::to_string(temp.second) + std::to_string(c) + std::to_string(d) + std::to_string(e));
+		vec_membs[i].crs = cur;
+		vec_membs[i].MAS = mas_maker(std::to_string(temp.first), std::to_string(cur));
 	}
-	d = temp.second - std::to_string(temp.second)[0] - 48;
-	temp_str = std::to_string(d);
-	while (!temp_str.empty()) {
-		e += *temp_str.end() - 48;
-		temp_str.pop_back();
+}
+
+void TPerson::bubble_sort_age() {
+	for (int i = 0; i < vec_membs.size() - 1; ++i) {
+		for (int j = 0; j < vec_membs.size() - i - 1; ++j) {
+			if (vec_membs[j].age > vec_membs[j + 1].age) {
+				std::swap(vec_membs[j], vec_membs[j + 1]);
+			}
+		}
 	}
-	crs = std::stoi(std::to_string(temp.second) + std::to_string(c) + std::to_string(d) + std::to_string(e));
-	
 }

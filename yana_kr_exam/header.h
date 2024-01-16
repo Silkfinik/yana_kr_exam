@@ -25,9 +25,10 @@ class TPerson {
 private:
 	int number;
 	std::vector<memb> vec_membs;
+	std::pair<int, int> Date(memb& temp);
 public:
 	TPerson() { number = 0; }
 	~TPerson() = default;
-	std::pair<int, int> Date(memb temp);
-	int Curious(std::pair<int, int> temp);
+	void Curious();
+	void bubble_sort_age();
 };

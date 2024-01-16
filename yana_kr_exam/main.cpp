@@ -4,5 +4,7 @@
 int main() {
 	TPerson o;
 	std::cin >> o;
-	return 0;
+	o.Curious();
+	o.bubble_sort_age();
+  	return 0;
 }
